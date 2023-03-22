@@ -20,7 +20,7 @@ class GrademahasiswaSeeder extends Seeder
 
         for ($i = 0; $i < 10; $i++) {
             grademahasiswa::create([
-                'nisn' => 202301010000 + $i + 1,
+                'nisn' => 2023010100 + $i + 1,
                 'nama' => $faker->name(),
                 'quiz' => $faker->numberBetween(60, 100),
                 'tugas' => $faker->numberBetween(60, 100),
