@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Apps\Models\grademahasiswa;
+use App\Models\grademahasiswa;
 use Illuminate\Database\Seeder;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Faker\Factory as Faker;
 
 
 class GrademahasiswaSeeder extends Seeder
@@ -16,23 +16,20 @@ class GrademahasiswaSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        $faker = Faker::create();
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
-        grademahasiswa::create([
-            'nisn'      =>  '123',
-            'nama'      =>  'RAHMAN',
-            'quiz'      =>  '87',
-            'tugas'     =>  '98',
-            'absen'     =>  '67',
-            'praktek'   =>  '90',
-            'uas'       =>  '90',
-            'grade'     =>  'A'
-
-        ]);
+        for ($i = 0; $i < 10; $i++) {
+            grademahasiswa::create([
+                'nisn' => 202301010000 + $i + 1,
+                'nama' => $faker->name(),
+                'quiz' => $faker->numberBetween(60, 100),
+                'tugas' => $faker->numberBetween(60, 100),
+                'absen' => $faker->numberBetween(60, 100),
+                'praktek' => $faker->numberBetween(60, 100),
+                'uas' => $faker->numberBetween(60, 100),
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
+        }
     }
 }
