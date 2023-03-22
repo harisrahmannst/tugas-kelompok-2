@@ -32,7 +32,7 @@ class GrademahasiswaController extends Controller
             
             // $request->session()->flash('success', 'Data Berhasil Disimpan');
             return redirect()->route('mahasiswa.index')
-                        ->with('success','Student updated successfully');
+                        ->with('success','Data Berhasil Disimpan');
         }
         // end
 
@@ -70,7 +70,7 @@ class GrademahasiswaController extends Controller
             $mahasiswa->update($request->all());
 
             return redirect()->route('mahasiswa.index')
-            ->with('success','Student updated successfully');
+            ->with('success','Data Berhasil Diubah');
         }
 
         public function destroy(grademahasiswa $mahasiswa)
