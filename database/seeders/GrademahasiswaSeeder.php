@@ -32,7 +32,6 @@ class GrademahasiswaSeeder extends Seeder
             'praktek'   =>  '90',
             'uas'       =>  '90',
             'grade'     =>  'A'
-
         ]);
     }
 }
