@@ -1,112 +1,121 @@
-<!doctype html>
-<html lang="en">
+@extends('layouts/app')
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.108.0">
-    <title>Dashboard Penilain Mahasiswa</title>
-
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom styles for this template -->
-    <link href="/css/dashboard.css" rel="stylesheet">
-</head>
-
-<body style="height: 100vh; overflow-y: auto; padding: 0; margin: 0;">
-    <div class="container-fluid" style="padding: 0;">
-        <div class="row">
-
-            <main class="px-md-4">
-                <div
-                    class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                    <h1 class="h2">Dashboard</h1>
-                    <div class="btn-toolbar mb-2 mb-md-0">
-                        <div class="btn-group me-2">
-                            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-                        </div>
-                    </div>
-                </div>
-
-                <canvas class="my-4 w-100" id="myChart" width="900" height="380"></canvas>
-
-                <h2>Data Mahasiswa</h2>
-                @if (session()->has('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-
-                <nav class="navbar bg-body-tertiary">
-                    <form class="container-fluid justify-content-start">
-                        <a href="{{ route('mahasiswa.create') }}">
-                            <button class="btn btn-outline-success me-2" type="button">Input Data</button>
-                        </a>
-                    </form>
-                </nav>
-                <div class="table-responsive">
-                    <table class="table table-striped table-sm">
-                        <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">NISN</th>
-                                <th scope="col">Nama</th>
-                                <th scope="col">Quiz</th>
-                                <th scope="col">Tugas</th>
-                                <th scope="col">Absensi</th>
-                                <th scope="col">Praktek</th>
-                                <th scope="col">UAS</th>
-                                <th scope="col">Grade</th>
-                                <th width="280px">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($mahasiswa as $data)
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{ $data->nisn }}</td>
-                                    <td>{{ $data->nama }}</td>
-                                    <td>{{ $data->quiz }}</td>
-                                    <td>{{ $data->tugas }}</td>
-                                    <td>{{ $data->absen }}</td>
-                                    <td>{{ $data->praktek }}</td>
-                                    <td>{{ $data->uas }}</td>
-                                    <td>{{ $data->grade }}</td>
-                                    <td>
-                                        <form action="{{ route('mahasiswa.destroy', $data->id) }}" method="POST">
-
-                                            <a class="btn btn-primary"
-                                                href="{{ route('mahasiswa.edit', $data->id) }}">Edit</a>
-
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </main>
+@section('style')
+<link href="{{ asset('css/list.css') }}" rel="stylesheet" />
+@endsection
+@section('title', 'ONEPLAY - Students Management') @section('content')
+<div class="container">
+    @if (session('success'))
+    <div class="row justify-center">
+        <div class="col-xs-12 col-md-8">
+            <div class="alert alert-success alert-dismissible fade show" role="alert" id="myAlert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"
+                    onclick="closeAlert()">
+                    <i class="fa fa-times" aria-hidden="true"></i>
+                </button>
+            </div>
         </div>
     </div>
+    @endif
+    <h1>List of Students</h1>
+    <div class="row mb-5">
+        <div class="col-xs-12 col-md-8">
 
-
-    <script src="/js/bootstrap.bundle.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js"
-        integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous">
-    </script>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"
-        integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous">
-    </script>
-
-    <script src="/js/dashboard.js"></script>
-</body>
-
-</html>
+        </div>
+        <div class="col-xs-12 col-md-4">
+            <canvas id="grades-chart"></canvas>
+        </div>
+    </div>
+    <div class="row justify-center">
+        <div class="col-xs-12 col-md-12 text-center">
+            <table class="table table-striped" style="margin-bottom: 60px;">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>NISN</th>
+                        <th>Name</th>
+                        <th>Quiz Score</th>
+                        <th>Assignment Score</th>
+                        <th>Attendance Score</th>
+                        <th>Practice Score</th>
+                        <th>Exam Score</th>
+                        <th>Total Score</th>
+                        <th>Average Score</th>
+                        <th>Grade</th>
+                        <th colspan="2" class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if(count($mahasiswa) < 1) <tr>
+                        <td colspan="12" class="text-center">
+                            Data not found.
+                        </td>
+                        </tr>
+                        @else
+                        @foreach ($mahasiswa as $index=> $data)
+                        <tr>
+                            <td>{{$index + 1}}</td>
+                            <td>{{$data->nisn}}</td>
+                            <td align="left">{{$data->nama}}</td>
+                            <td>{{$data->quiz}}</td>
+                            <td>{{$data->tugas}}</td>
+                            <td>{{$data->absen}}</td>
+                            <td>{{$data->praktek}}</td>
+                            <td>{{$data->uas}}</td>
+                            <td>{{$data->getTotalScore()}}</td>
+                            <td>{{$data->getAverageScore()}}</td>
+                            <td><b>{{$data->getGrade()}}</b></td>
+                            <td>
+                                <form action="{{ route('mahasiswa.destroy', $data->id) }}" method="POST">
+                                    <a class="btn btn-primary" href="{{ route('mahasiswa.edit', $data->id) }}">Edit</a>
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
+                        @endif
+                </tbody>
+            </table>
+            <a href="{{ route('mahasiswa.create') }}" class="btn btn-primary">+ Upload New Data</a>
+        </div>
+    </div>
+</div>
+@endsection
+@section('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var grades = {!! json_encode($chart_data) !!};
+    var ctx = document.getElementById('grades-chart').getContext('2d');
+    var gradesChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['A', 'B', 'C', 'D'],
+            datasets: [{
+                label: 'Number of Students',
+                data: [grades.A, grades.B, grades.C, grades.D],
+                backgroundColor: [
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(255, 99, 132, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(255, 99, 132, 1)',
+                ],
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            // ...
+        }
+    });
+</script>
+@endsection

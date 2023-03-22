@@ -26,6 +26,6 @@ use App\Http\Controllers\GrademahasiswaController;
 
 Route::get('/', function () {
     return redirect()->route('mahasiswa.index');
-     });
+});
 
 Route::resource('mahasiswa', GrademahasiswaController::class);

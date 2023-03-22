@@ -12,72 +12,75 @@ class GrademahasiswaController extends Controller
 {
 
 
-        // Store Function
-        public function store(Request $request, grademahasiswa $mahasiswa)
-        {
-            //define validation rules
-            $request->validate([
-                'nisn'      =>  'required|numeric|digits_between:5,10',
-                'nama'      =>  'required|max:255',
-                'quiz'      =>  'required|numeric|digits_between:2,2',
-                'tugas'     =>  'required|numeric|digits_between:2,2',
-                'absen'     =>  'required|numeric|digits_between:2,2',
-                'praktek'   =>  'required|numeric|digits_between:2,2',
-                'uas'       =>  'required|numeric|digits_between:2,2',
-                'grade'     =>  'required'
-            ]);
+    // Store Function
+    public function store(Request $request, grademahasiswa $mahasiswa)
+    {
+        //define validation rules
+        $request->validate([
+            'nisn' => 'required|numeric|digits_between:5,10',
+            'nama' => 'required|max:255',
+            'quiz' => 'required|numeric|digits_between:2,2',
+            'tugas' => 'required|numeric|digits_between:2,2',
+            'absen' => 'required|numeric|digits_between:2,2',
+            'praktek' => 'required|numeric|digits_between:2,2',
+            'uas' => 'required|numeric|digits_between:2,2',
+        ]);
 
-            //Create data
-            $mahasiswa->create($request->all());
-            
-            // $request->session()->flash('success', 'Data Berhasil Disimpan');
-            return redirect()->route('mahasiswa.index')
-                        ->with('success','Data Berhasil Disimpan');
+        //Create data
+        $mahasiswa->create($request->all());
+
+        // $request->session()->flash('success', 'Data Berhasil Disimpan');
+        return redirect()->route('mahasiswa.index')
+            ->with('success', 'Data Berhasil Disimpan');
+    }
+    // end
+
+    public function create()
+    {
+        return view('mahasiswa.create');
+    }
+
+    public function index()
+    {
+        $mahasiswa = grademahasiswa::all();
+        $grade = [];
+
+        foreach ($mahasiswa as $index => $student) {
+            array_push($grade, $student->getGrade());
         }
-        // end
+        $chart_data = array_count_values($grade);
+        return view('mahasiswa.index', compact('mahasiswa', 'chart_data'));
+    }
 
-        public function create()
-        {
-            return view('mahasiswa.create');
-        }
+    public function edit(grademahasiswa $mahasiswa)
+    {
+        return view('mahasiswa.edit', compact('mahasiswa'));
 
-        public function index()
-        {
-            $mahasiswa = grademahasiswa::latest()->paginate();
-            return view('mahasiswa.index',compact('mahasiswa'));
-            
-        }
+    }
 
-        public function edit(grademahasiswa $mahasiswa)
-        {
-            return view('mahasiswa.edit',compact('mahasiswa'));
+    public function update(Request $request, grademahasiswa $mahasiswa)
+    {
+        $request->validate([
+            'nisn' => 'required|numeric|digits_between:5,10',
+            'nama' => 'required|max:255',
+            'quiz' => 'required|numeric|digits_between:2,2',
+            'tugas' => 'required|numeric|digits_between:2,2',
+            'absen' => 'required|numeric|digits_between:2,2',
+            'praktek' => 'required|numeric|digits_between:2,2',
+            'uas' => 'required|numeric|digits_between:2,2',
+        ]);
 
-        }
+        $mahasiswa->update($request->all());
 
-        public function update(Request $request, grademahasiswa $mahasiswa)
-        {
-            $request->validate([
-                'nisn'      =>  'required|numeric|digits_between:5,10',
-                'nama'      =>  'required|max:255',
-                'quiz'      =>  'required|numeric|digits_between:2,2',
-                'tugas'     =>  'required|numeric|digits_between:2,2',
-                'absen'     =>  'required|numeric|digits_between:2,2',
-                'praktek'   =>  'required|numeric|digits_between:2,2',
-                'uas'       =>  'required|numeric|digits_between:2,2',
-                'grade'     =>  'required'
-            ]);
-          
-            $mahasiswa->update($request->all());
+        return redirect()->route('mahasiswa.index')
+            ->with('success', 'Data Berhasil Diubah');
+    }
 
-            return redirect()->route('mahasiswa.index')
-            ->with('success','Data Berhasil Diubah');
-        }
+    public function destroy(grademahasiswa $mahasiswa)
+    {
+        $mahasiswa->delete();
 
-        public function destroy(grademahasiswa $mahasiswa)
-        {
-            $mahasiswa->delete();
-
-            return redirect()->route('mahasiswa.index')
-            ->with('success','Data Berhasil Dihapus');
-        }
+        return redirect()->route('mahasiswa.index')
+            ->with('success', 'Data Berhasil Dihapus');
+    }
 }
