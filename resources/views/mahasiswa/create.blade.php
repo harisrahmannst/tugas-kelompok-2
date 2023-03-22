@@ -30,7 +30,7 @@
                                 required="required" value="{{ old('nisn') }}"
                                 class="@error('nisn') is-invalid @enderror">
                         </div>
-
+                        
                         <div class="form-group mb-2">
                             <label>Nama Lengkap</label>
                             <input type="text" name="nama" placeholder="Masukkan Nama Siswa" class="form-control"
@@ -75,8 +75,8 @@
                         <button type="submit" class="btn btn-success">SIMPAN</button>
                         <button type="reset" class="btn btn-warning">RESET</button>
 
-                        <script src="/js/perhitungangrade.js"></script>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
