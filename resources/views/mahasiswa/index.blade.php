@@ -23,7 +23,7 @@
         <div class="col-xs-12 col-md-8">
 
         </div>
-        <div class="col-xs-12 col-md-4">
+        <div class="col-xs-12 justify-center">
             <canvas id="grades-chart"></canvas>
         </div>
     </div>
