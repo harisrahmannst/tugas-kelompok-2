@@ -19,11 +19,11 @@ class GrademahasiswaController extends Controller
         $request->validate([
             'nisn' => 'required|numeric|digits_between:5,10',
             'nama' => 'required|max:255',
-            'quiz' => 'required|numeric|digits_between:2,3',
-            'tugas' => 'required|numeric|digits_between:2,3',
-            'absen' => 'required|numeric|digits_between:2,3',
-            'praktek' => 'required|numeric|digits_between:2,3',
-            'uas' => 'required|numeric|digits_between:2,3',
+            'quiz' => 'required|numeric|min:5|max:100',
+            'tugas' => 'required|numeric|min:5|max:100',
+            'absen' => 'required|numeric|min:5|max:100',
+            'praktek' => 'required|numeric|min:5|max:100',
+            'uas' => 'required|numeric|min:5|max:100'
         ]);
 
         //Create data
@@ -63,11 +63,11 @@ class GrademahasiswaController extends Controller
         $request->validate([
             'nisn' => 'required|numeric|digits_between:5,10',
             'nama' => 'required|max:255',
-            'quiz' => 'required|numeric|digits_between:2,3',
-            'tugas' => 'required|numeric|digits_between:2,3',
-            'absen' => 'required|numeric|digits_between:2,3',
-            'praktek' => 'required|numeric|digits_between:2,3',
-            'uas' => 'required|numeric|digits_between:2,3',
+            'quiz' => 'required|numeric|min:5|max:100',
+            'tugas' => 'required|numeric|min:5|max:100',
+            'absen' => 'required|numeric|min:5|max:100',
+            'praktek' => 'required|numeric|min:5|max:100',
+            'uas' => 'required|numeric|min:5|max:100'
         ]);
 
         $mahasiswa->update($request->all());
